@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: niespana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/11 17:07:15 by niespana          #+#    #+#             */
+/*   Updated: 2022/06/11 17:07:17 by niespana         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Libft/libft.h"
 #include <signal.h>
 #include <zconf.h>
@@ -10,7 +22,7 @@ void	free_all(char **message, int i)
 		free(message[i]);
 }
 
-int	char_tobinary(char a, int bit)
+int	char_tobinary(unsigned char a, int bit)
 {
 	int	chari;
 	int	limit;
@@ -22,16 +34,16 @@ int	char_tobinary(char a, int bit)
 	return (chari % 2);
 }
 
-char	**send_message(char *av)
+char	**send_message(unsigned char *av)
 {
 	int		i;
 	int		j;
 	char	**binary;
 
-	binary = malloc(sizeof(char *) * (ft_strlen(av) + 1));
+	binary = malloc(sizeof(unsigned char *) * (ft_strlen((char *)av) + 1));
 	i = -1;
 	while (av[++i])
-		binary[i] = malloc(sizeof(char) * 9);
+		binary[i] = malloc(sizeof(unsigned char) * 9);
 	binary[i] = 0;
 	i = -1;
 	while (binary[++i])
@@ -54,11 +66,11 @@ int	main(int ac, char **av)
 	int		j;
 	int		serv;
 
-	serv = ft_atoi(av[2]);
+	serv = ft_atoi(av[1]);
 	i = -1;
 	if (ac != 3)
 		return (0);
-	message = send_message(av[1]);
+	message = send_message((unsigned char *)av[2]);
 	while (message[++i])
 	{
 		j = -1;
@@ -68,7 +80,7 @@ int	main(int ac, char **av)
 				kill(serv, SIGUSR1);
 			else
 				kill(serv, SIGUSR2);
-			usleep(40);
+			usleep(1 + j + i);
 		}
 	}
 	free_all(message, -1);
