@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Libft/libft.h"
+#include "ft_printf/ft_printf.h"
 #include <signal.h>
 #include <zconf.h>
 #include <stdio.h>
@@ -80,7 +81,7 @@ int	main(int ac, char **av)
 				kill(serv, SIGUSR1);
 			else
 				kill(serv, SIGUSR2);
-			usleep(1 + j + i);
+			usleep(200);
 		}
 	}
 	free_all(message, -1);

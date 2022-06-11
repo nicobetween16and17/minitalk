@@ -42,24 +42,18 @@ unsigned char	transform(int *bits, int i, int total)
 	return ((unsigned char)total);
 }
 
-void	display(unsigned char message[100000][5], int *j, int *k)
+void	reset(unsigned char *message, int *j)
 {
-	int	i;
-
-	i = -1;
-	message[*j][*k] = 0;
-	while (message[++i][0])
-		ft_printf("%s", message[i]);
+	*message = 0;
 	*j = 0;
-	*k = 0;
 }
 
 void	handle(int num)
 {
 	static int				bit;
 	static int				bits[8];
-	static unsigned char	message[100000][5];
-	static int				j[2];
+	static unsigned char	message[5];
+	static int				j;
 
 	g_time = 1;
 	if (num == SIGUSR1)
@@ -71,16 +65,15 @@ void	handle(int num)
 		bits[7 - bit] = num;
 		bit++;
 		if (bit > 7)
-			message[j[0]][j[1]++] = transform(bits, 0, 0);
-		message[j[0]][j[1]] = 0;
-		message[j[0] + 1][0] = 0;
-		if (j[1] == 4 && ++j[0])
-			j[1] = 0;
+			message[j++] = transform(bits, 0, 0);
+		message[j] = 0;
 		if (bit > 7)
 			bit = 0;
+		if (j == 4 && ft_printf("%s", message))
+			reset(&message[0], &j);
 	}
-	if (j[0] == 99998 || (num == -1 && message[0][0] != 0))
-		display(message, &j[0], &j[1]);
+	if (num == -1 && message[0] != 0 && ft_printf("%s", message))
+		reset(&message[0], &j);
 }
 
 int	main(void)
@@ -92,9 +85,9 @@ int	main(void)
 	{
 		signal(SIGUSR1, handle);
 		signal(SIGUSR2, handle);
-		usleep(10);
+		usleep(1);
 		g_time++;
-		if (g_time > 10000)
+		if (g_time > 100000)
 			handle(-1);
 	}
 }
